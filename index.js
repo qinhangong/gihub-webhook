@@ -1,6 +1,14 @@
 const http = require("http");
+const spawn = require('child_process').spawn;
 const createHandler = require("github-webhook-handler");
 const handler = createHandler({ path: "/webhook", secret: "bookinfo-node" });
+
+const rumCommand = (cmd, args, callback) => {
+  const child = spawn(cmd, args)
+  let response = ''
+  child.stdout.on('data', buffer => response += buffer.toString())
+  child.stdout.on('end', () => callback(response))
+}
 
 http
   .createServer(function(req, res) {
@@ -21,4 +29,7 @@ handler.on("push", function(event) {
     event.payload.repository.name,
     event.payload.ref
   );
+  rumCommand('sh', ['./deploy.sh'], txt => {
+    console.log('deploy====',txt)
+})
 });
