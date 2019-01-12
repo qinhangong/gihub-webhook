@@ -1,5 +1,5 @@
 #!/bin/bash
 
 git reset --hard origin/master
-echo "pulling source code................................................"
+git clean -f
 git pull origin master
